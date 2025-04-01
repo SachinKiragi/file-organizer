@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap"
+    rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+<style>
+    *{
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+<body class="h-screen bg-red-100 overflow-auto">
+    <div class="flex text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border border-black-500 p-2 items-center flex-col gap-4">
+        <div class="input-folder border flex flex-col gap-3 w-fit">
+            <button type="button" class="bg-blue-500 p-1 rounded text-white" id="inputBtn">Select Input Folder</button>
+            <span>Input Folder :  <strong class="break-words" id="inputFolderPath"></strong></span>
+        </div>
+        <div class="keywords-div border p-2 flex flex-col gap-3 w-fit">
+            <div class="flex flex-col items-center gap-2">
+                <label for="keywords" class="bg-blue-500 p-1 rounded text-white w-auto">Keywords:</label>
+                <input id="keywords" type="text" class="bg-transparent w-96 text-center border p-1" placeholder="Enter keywords in comma-separated manner...">
+            </div>
+        </div>        
+        <div class="output-folder border flex flex-col gap-3">
+            <button type="button" class="bg-blue-500 p-1 rounded text-white" id="outputBtn">Select Output Folder</button>
+            <span>Output Folder :  <strong class="break-words" id="outputFolderPath"></strong></span>
+        </div>
+        <div class="dest-folder-div border p-2 flex flex-col gap-3">
+            <label for="destFolderName" class="bg-blue-500 p-1 rounded text-white">Destination Folder Name: </label>
+            <input id="destFolderName" type="text" class="bg-transparent w-full text-center" placeholder="Enter Destination Folder Name(We will crete this)">
+        </div>
+        <div class="transfer-div border p-2 flex flex-col gap-3">
+            <button type="button" class="bg-blue-500 p-1 rounded text-white" id="transferBtn">Transfer</button>
+        </div>
+    </div>
+</body>
+
+<script src="js/renderer.js"></script>
+
+</html>
