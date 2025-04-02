@@ -14,7 +14,7 @@ body {
 }
 
 :root {
-	--size: 120;
+	--size: 80;
 	--coefficient: 1px;
 	--timeline: 2.6s;
 	--delay: 0.65s;

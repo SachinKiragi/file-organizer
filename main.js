@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, ipcMain, dialog} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain, dialog, shell} = require('electron')
 const path = require('path')
 const fs = require('fs');
 const fsPro = require('fs').promises;
@@ -163,6 +163,7 @@ ipcMain.on('file:transfer', async(e, options) => {
 
     await mainWindow.loadFile(path.join(__dirname, '/renderer/index.html'))
 
+    await shell.openPath(destFolder);
 })
 
 
