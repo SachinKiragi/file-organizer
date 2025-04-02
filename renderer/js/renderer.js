@@ -6,6 +6,8 @@ const outputFolderPathElement = document.getElementById('outputFolderPath');
 const keywordElement = document.getElementById('keywords');
 const destFolderElement = document.getElementById('destFolderName');
 const transferBtn = document.getElementById('transferBtn');
+const homeElement = document.getElementById('home');
+const trasferElement = document.getElementById('tranferring-div');
 
 let inputFolderPath="";
 let outputFolderPath="";
@@ -55,3 +57,23 @@ function alertError(message){
         }
     })
 }
+
+
+
+
+document.getElementById('tg').addEventListener('click', ()=>{
+    console.log(homeElement, trasferElement);
+    console.log(homeElement.classList.contains("flex"));
+    
+    if(homeElement.classList.contains("flex")){
+        homeElement.classList.remove("flex");
+        homeElement.classList.add("hidden")
+        trasferElement.classList.remove("hidden")
+        trasferElement.classList.add("flex")
+    } else{
+        homeElement.classList.remove("hidden")
+        homeElement.classList.add("flex")
+        trasferElement.classList.remove("flex")
+        trasferElement.classList.add("hidden")
+    }
+})

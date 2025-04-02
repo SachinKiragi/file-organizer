@@ -115,7 +115,7 @@ const handleCurrentSrcFolder = async(srcFolder, destFolder, keyWords)=>{
             
             if(entry.isDirectory()){
                 // console.log("45: ", entry);
-                await handleCurrentSrcFolder(path.join(entry.path, entry.name));
+                await handleCurrentSrcFolder(path.join(entry.path, entry.name), destFolder, keyWords);
             } else{
                 // console.log(entry);
                 await handleCurrFile(entry, destFolder, keyWords);
@@ -134,6 +134,7 @@ const handleMainFunction = async(srcFolder, destFolder, keyWords)=>{
     
     await handleCurrentSrcFolder(srcFolder, destFolder, keyWords);
     console.log("done");
+
     
 }
 
@@ -155,7 +156,11 @@ ipcMain.on('file:transfer', async(e, options) => {
         fs.mkdirSync(destFolder);
     }
 
+    await mainWindow.loadFile(path.join(__dirname, '/renderer/loader.html'))
+
     await handleMainFunction(srcFolder, destFolder, keyWords);
+
+    await mainWindow.loadFile(path.join(__dirname, '/renderer/index.html'))
 
 })
 
