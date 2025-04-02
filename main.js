@@ -97,37 +97,38 @@ const handleCurrFile = async(entry, destFolder, keyWords) => {
 }
 
 
-const handleCurrentSrcFolder = async(srcFolder, destFolder, keyWords)=>{
-    console.log("100: ;", keyWords);
-    
-    try {
-        const entriesInCurrFolder = await fs.readdirSync(srcFolder, {withFileTypes: true});
-        // console.log("32: ", entriesInCurrFolder);
+    const handleCurrentSrcFolder = async(srcFolder, destFolder, keyWords)=>{
+        console.log("100: ;", keyWords);
+        await fsPro.chmod(srcFolder, 0o666); // Remove read-only restrictions
+
         
-        for(let entry of entriesInCurrFolder){
-            // console.log(entry.isDirectory());
-            // console.log(entry.name, entry.name.split('.')[1]);
-            const entriesArr = entry.name.split(".");
-
-            if(EXCLUDED_DIRS.includes(entriesArr[entriesArr.length-1])){
-                return;       
-            }
+        try {
+            const entriesInCurrFolder = await fs.readdirSync(srcFolder, {withFileTypes: true});
             
-            if(entry.isDirectory()){
-                // console.log("45: ", entry);
-                await handleCurrentSrcFolder(path.join(entry.path, entry.name), destFolder, keyWords);
-            } else{
-                // console.log(entry);
-                await handleCurrFile(entry, destFolder, keyWords);
-            }
-            
-        }        
+            for(let entry of entriesInCurrFolder){
+                // console.log(entry.isDirectory());
+                console.log("111: ", entry.name, entry.name.split('.')[1]);
+                const entriesArr = entry.name.split(".");
 
-    } catch (error) {
-        console.log("33: ", error.message);
-        Toastify.toast('error while reading folder')
+                if(EXCLUDED_DIRS.includes(entriesArr[entriesArr.length-1])){
+                    return;       
+                }
+                
+                if(entry.isDirectory()){
+                    // console.log("45: ", entry);
+                    await handleCurrentSrcFolder(path.join(entry.path, entry.name), destFolder, keyWords);
+                } else{
+                    // console.log(entry);
+                    await handleCurrFile(entry, destFolder, keyWords);
+                }
+                
+            }        
+
+        } catch (error) {
+            console.log("33: ", error.message);
+            Toastify.toast('error while reading folder')
+        }
     }
-}
 
 const handleMainFunction = async(srcFolder, destFolder, keyWords)=>{
     console.log("125: ", keyWords);
