@@ -11,6 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "electron": "^35.1.2",
+    "pdf-parse": "^1.1.1",
+    "pdfreader": "^3.0.7",
     "toastify-js": "^1.12.0"
   }
 }
