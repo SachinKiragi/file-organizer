@@ -4,6 +4,8 @@ const fs = require('fs');
 const fsPro = require('fs').promises;
 const PdfParse = require("pdf-parse");
 const mammoth = require('mammoth');
+const unzipper = require('unzipper')
+const xml2js = require('xml2js')
 
 
 let mainWindow;
@@ -100,6 +102,65 @@ const handleCurrentDocxFile = async(filePath, destFolder, keyWords)=>{
 
 
 
+function extractText(xmlObj) {
+    let textArray = [];
+
+    function traverse(obj) {
+        if (typeof obj === "object") {
+            for (const key in obj) {
+                if (key === "a:t") {
+                    textArray.push(obj[key][0]); // Extract actual text
+                } else {
+                    traverse(obj[key]);
+                }
+            }
+        }
+    }
+
+    traverse(xmlObj);
+    return textArray;
+}
+
+async function extractTextFromPPTX(filePath) {
+    const pptxText = [];
+
+    // Unzip PPTX file
+    const zip = fs.createReadStream(filePath).pipe(unzipper.Parse({ forceStream: true }));
+
+    for await (const entry of zip) {
+        // Look for slide XML files
+        if (entry.path.startsWith("ppt/slides/slide") && entry.path.endsWith(".xml")) {
+            const content = await entry.buffer();
+            const parsedXml = await xml2js.parseStringPromise(content);
+            
+            // Extract text from slide
+            const textElements = extractText(parsedXml);
+            pptxText.push(...textElements);
+        } else {
+            entry.autodrain();
+        }
+    }
+
+    // console.log("Extracted Text:", pptxText.join(" "));
+    return pptxText.join(" ");
+}
+
+
+
+const handleCurrentPptxFile = async(filePath, destFolder, keyWords)=>{
+    const data = (await extractTextFromPPTX(filePath)).toLowerCase();
+    console.log(data.slice(0, 50));
+    
+    for(let key of keyWords){
+        if(data.includes(key.toLowerCase())){
+            await moveFilesFromSourceToDestination(filePath, destFolder);
+        }
+    }
+    
+}
+
+
+
 const handleCurrFile = async(entry, destFolder, keyWords) => {
     // console.log("83: keywords: ", keyWords);
         
@@ -114,6 +175,13 @@ const handleCurrFile = async(entry, destFolder, keyWords) => {
     } else if(entry.name.endsWith("docx")){
         try {
             await handleCurrentDocxFile(filePath, destFolder, keyWords);
+        } catch (error) {
+            console.log("116: ", error);
+        }
+    } else if(entry.name.endsWith('pptx')){
+        console.log(entry);
+        try {
+            await handleCurrentPptxFile(filePath, destFolder, keyWords);
         } catch (error) {
             console.log("116: ", error);
         }
