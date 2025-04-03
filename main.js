@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs');
 const fsPro = require('fs').promises;
 const PdfParse = require("pdf-parse");
+const mammoth = require('mammoth');
 
 
 let mainWindow;
@@ -79,18 +80,43 @@ const handleCurrentPdfFile = async(filePath, destFolder, keyWords)=>{
 
 
 
-const handleCurrFile = async(entry, destFolder, keyWords) => {
-        console.log("83: keywords: ", keyWords);
+const handleCurrentDocxFile = async(filePath, destFolder, keyWords)=>{
+    try {
+        const buffer = await fsPro.readFile(filePath);
+        const { value: text } = await mammoth.extractRawText({ buffer });
+
+        const data = text;
+        console.log("data: ", data.slice(0, 50));
         
+        for(let key of keyWords){
+            if(data.includes(key.toLowerCase())){
+                await moveFilesFromSourceToDestination(filePath, destFolder);
+            }
+        }
+    } catch (error) {
+        console.log("f***\n", error.message);
+    }
+}
+
+
+
+const handleCurrFile = async(entry, destFolder, keyWords) => {
+    // console.log("83: keywords: ", keyWords);
+        
+    const filePath = path.join(entry.path, entry.name);
     if(entry.name.endsWith('pdf')){
         try {
             console.log(entry.name.endsWith('pdf'));
-            const filePath = path.join(entry.path, entry.name);
            await handleCurrentPdfFile(filePath, destFolder, keyWords);
         } catch (error) {
             console.log("e: ", error);       
         }
-        
+    } else if(entry.name.endsWith("docx")){
+        try {
+            await handleCurrentDocxFile(filePath, destFolder, keyWords);
+        } catch (error) {
+            console.log("116: ", error);
+        }
     }
     
     return;
@@ -98,7 +124,7 @@ const handleCurrFile = async(entry, destFolder, keyWords) => {
 
 
     const handleCurrentSrcFolder = async(srcFolder, destFolder, keyWords)=>{
-        console.log("100: ;", keyWords);
+        // console.log("100: ;", keyWords);
         await fsPro.chmod(srcFolder, 0o666); // Remove read-only restrictions
 
         
@@ -107,7 +133,7 @@ const handleCurrFile = async(entry, destFolder, keyWords) => {
             
             for(let entry of entriesInCurrFolder){
                 // console.log(entry.isDirectory());
-                console.log("111: ", entry.name, entry.name.split('.')[1]);
+                // console.log("111: ", entry.name, entry.name.split('.')[1]);
                 const entriesArr = entry.name.split(".");
 
                 if(EXCLUDED_DIRS.includes(entriesArr[entriesArr.length-1])){
@@ -131,7 +157,7 @@ const handleCurrFile = async(entry, destFolder, keyWords) => {
     }
 
 const handleMainFunction = async(srcFolder, destFolder, keyWords)=>{
-    console.log("125: ", keyWords);
+    // console.log("125: ", keyWords);
     
     await handleCurrentSrcFolder(srcFolder, destFolder, keyWords);
     console.log("done");
@@ -163,7 +189,7 @@ ipcMain.on('file:transfer', async(e, options) => {
 
     await mainWindow.loadFile(path.join(__dirname, '/renderer/index.html'))
 
-    await shell.openPath(destFolder);
+    // await shell.openPath(destFolder);
 })
 
 
