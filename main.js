@@ -87,10 +87,11 @@ const handleCurrentDocxFile = async(filePath, destFolder, keyWords)=>{
         const buffer = await fsPro.readFile(filePath);
         const { value: text } = await mammoth.extractRawText({ buffer });
 
-        const data = text;
-        console.log("data: ", data.slice(0, 50));
+        const data = text.toLocaleLowerCase();
+        console.log("data: ", data.slice(0, 500));
         
         for(let key of keyWords){
+            
             if(data.includes(key.toLowerCase())){
                 await moveFilesFromSourceToDestination(filePath, destFolder);
             }
