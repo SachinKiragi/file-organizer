@@ -30,7 +30,7 @@ A cross-platform desktop application built with **Electron** and **Node.js** to 
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/your-username/file-organizer.git
+git clone https://github.com/SachinKiragi/file-organizer.git
 cd file-organizer
 npm install
 npm start
